@@ -6,7 +6,6 @@ import { Redirect, Tabs } from "expo-router";
 const TabLayout = () => {
   const { isAuthenticated } = useAuthState();
 
-  console.log(isAuthenticated);
   if (!isAuthenticated) {
     return <Redirect href="/SignIn" />;
   }

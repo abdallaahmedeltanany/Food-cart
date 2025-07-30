@@ -1,4 +1,4 @@
-import { CreateUserParams, SignInParams } from "@/type";
+import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
 import {
   Account,
   Avatars,
@@ -6,6 +6,7 @@ import {
   Databases,
   ID,
   Query,
+  Storage,
 } from "react-native-appwrite";
 
 export const appWriteConfig = {
@@ -13,7 +14,12 @@ export const appWriteConfig = {
   platform: "com.jsm.foodcart",
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!,
   dataBaseId: "687ea3ef001cd0a620da",
+  bucketId: "688683d10001f2fd820b",
   userCollectionId: "687ea402002b115754b4",
+  categoriesCollectionId: "68864bd7001ed43f08b8",
+  menuCollectionId: "68864f1c0033940e1e6b",
+  customizationsCollectionId: "6886534e001fb3ced769",
+  menuCustomizationCollectionId: "688655a5000941fcb1b1",
 };
 
 export const client = new Client();
@@ -25,6 +31,7 @@ client
 
 export const account = new Account(client);
 export const databases = new Databases(client);
+export const storage = new Storage(client);
 const avatars = new Avatars(client);
 // createing new user
 export const createUser = async ({
@@ -84,6 +91,38 @@ export const getCurrentUser = async () => {
     return currentUser.documents[0];
   } catch (e) {
     console.log(e);
+    throw new Error(e as string);
+  }
+};
+
+export const getMenu = async ({ category, query }: GetMenuParams) => {
+  try {
+    const queries: string[] = [];
+
+    if (category) queries.push(Query.equal("categories", category));
+    if (query) queries.push(Query.search("name", query));
+
+    const menus = await databases.listDocuments(
+      appWriteConfig.dataBaseId,
+      appWriteConfig.menuCollectionId,
+      queries
+    );
+
+    return menus.documents;
+  } catch (e) {
+    throw new Error(e as string);
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const categories = await databases.listDocuments(
+      appWriteConfig.dataBaseId,
+      appWriteConfig.categoriesCollectionId
+    );
+
+    return categories.documents;
+  } catch (e) {
     throw new Error(e as string);
   }
 };

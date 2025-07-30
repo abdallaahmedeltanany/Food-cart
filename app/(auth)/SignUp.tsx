@@ -59,6 +59,7 @@ const SignUp = () => {
         title="Sign Up"
         onPress={handleSubmitForm}
         isLoading={isSubmitting}
+        textStyle="text-white paragraph-bold"
       />
       <View className="flex justify-center flex-row gap-2">
         <Text className="base-regular text-gray-100">
